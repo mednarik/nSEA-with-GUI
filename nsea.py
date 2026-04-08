@@ -51,7 +51,7 @@ def sebxml2dict(xml: ET.ElementTree) -> dict:
                 case "integer":
                     data[key_text] = int(elem.text)
 
-                    return data
+    return data
 
 
                 # The elements strictly need to be sorted
@@ -65,7 +65,7 @@ def sort_elements(data: dict) -> OrderedDict:
     for key in sorted_keys:
         ord_data[key] = data[key]
 
-        return ord_data
+    return ord_data
 
 
     # The dumped JSON data strictly needs to contain
@@ -101,7 +101,7 @@ def seb_hash_from_config(filename: str) -> None:
     url = data["startURL"]
     config_key = make_http_header_hash(url, config_hash)
 
-    print(f"X-SafeExamBrowser-ConfigKeyHash: {config_key}")
+    return f"X-SafeExamBrowser-ConfigKeyHash: {config_key}"
 
 
     # Handle script arguments.

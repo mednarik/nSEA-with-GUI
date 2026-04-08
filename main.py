@@ -1,5 +1,6 @@
 import tkinter as tk
 from bs4 import BeautifulSoup
+from nsea import *
 import requests
 
 
@@ -92,15 +93,16 @@ def enter():
         print("No matching link found")
         
     download_file(cookie, download_link)
-    
+    output = seb_hash_from_config("config.seb")
+    output_label.insert(0, output)
 
 
 if __name__ == "__main__":
 
     # Create the main window
     root = tk.Tk()
-    root.title("Simple Tkinter Loop")
-    root.minsize(400, 300)
+    root.title("nSEA with GUI")
+    root.minsize(400, 100)
 
 
     info_label = tk.Label(root, text="Paste URL")
@@ -108,9 +110,12 @@ if __name__ == "__main__":
 
     entry = tk.Entry(root)
     entry.pack()
-
+    
     button = tk.Button(root, text="Enter", command=enter)
     button.pack()
+    
+    output_label = tk.Entry(root, width=100)
+    output_label.pack()
 
     # Start the main event loop
     root.mainloop()
