@@ -64,6 +64,15 @@ def get_download_page(cookie, url):
             return href
     return None
 
+def download_file(cookie, url, save_path="config.seb"):
+    session = requests.Session()
+    session.cookies.set("MoodleSessionmdl4", cookie)
+
+    response = session.get(url, stream=True)
+    with open(save_path, "wb") as f:
+        for chunk in response.iter_content(chunk_size=8192):
+            f.write(chunk)
+            print(f"Downloaded to {save_path}")
 
 
 def enter():
@@ -81,6 +90,8 @@ def enter():
         print(f"download link: {download_link}")
     else:
         print("No matching link found")
+        
+    download_file(cookie, download_link)
     
 
 
