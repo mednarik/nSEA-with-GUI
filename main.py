@@ -119,29 +119,29 @@ if __name__ == "__main__":
     root.configure(fg_color="#111111")
 
     # main container
-    frame = ctk.CTkFrame(root, corner_radius=15, fg_color="#1a1a1a")
-    frame.pack(padx=30, pady=30, fill="both", expand=True)
+    home_frame = ctk.CTkFrame(root, corner_radius=15, fg_color="#1a1a1a")
+    home_frame.pack(padx=30, pady=30, fill="both", expand=True)
 
     # title
-    title_label = ctk.CTkLabel(frame, text="nSEA", font=ctk.CTkFont(size=40, weight="bold"))
+    title_label = ctk.CTkLabel(home_frame, text="nSEA", font=ctk.CTkFont(size=40, weight="bold"))
     title_label.pack(pady=(30, 5))
 
-    subtitle_label = ctk.CTkLabel(frame, text="Safe Exam Browser Config Key Generator", font=ctk.CTkFont(size=15, weight="bold"), text_color="#aaaaaa")
+    subtitle_label = ctk.CTkLabel(home_frame, text="Safe Exam Browser Config Key Generator", font=ctk.CTkFont(size=15, weight="bold"), text_color="#aaaaaa")
     subtitle_label.pack(pady=(0, 25))
 
     # url input
-    entry = ctk.CTkEntry(frame, width=400, height=50, placeholder_text="Paste Moodle exam URL here", corner_radius=10,
+    entry = ctk.CTkEntry(home_frame, width=400, height=50, placeholder_text="Paste Moodle exam URL here", corner_radius=10,
                          font=ctk.CTkFont(size=14, weight="bold"),
                          fg_color="#2a2a2a", border_width=2, text_color="white")
     entry.pack(pady=(0, 15))
 
     # enter button
-    button = ctk.CTkButton(frame, text="Generate Key", command=enter, width=400, height=50, corner_radius=10,
+    button = ctk.CTkButton(home_frame, text="Generate Key", command=enter, width=400, height=50, corner_radius=10,
                            font=ctk.CTkFont(size=16, weight="bold"))
     button.pack(pady=(0, 15))
 
     # output field
-    output_label = ctk.CTkEntry(frame, width=400, height=50, corner_radius=10,
+    output_label = ctk.CTkEntry(home_frame, width=400, height=50, corner_radius=10,
                                 placeholder_text="Output will appear here",
                                 font=ctk.CTkFont(size=14, weight="bold"),
                                 fg_color="#2a2a2a", border_width=2, 
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     output_label.pack(pady=(0, 10))
 
     # status label
-    status_label = ctk.CTkLabel(frame, text="", font=ctk.CTkFont(size=13, weight="bold"), text_color="gray")
+    status_label = ctk.CTkLabel(home_frame, text="", font=ctk.CTkFont(size=13, weight="bold"), text_color="gray")
     status_label.pack()
 
 
