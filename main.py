@@ -175,7 +175,8 @@ if __name__ == "__main__":
                                 placeholder_text="Output will appear here",
                                 font=ctk.CTkFont(size=14, weight="bold"),
                                 fg_color="#2a2a2a", border_width=2,
-                                text_color="white", state="readonly")
+                                text_color="white")
+    output_label.configure(state="readonly")
     output_label.pack(pady=(0, 10))
 
     status_label = ctk.CTkLabel(home_frame, text="", font=ctk.CTkFont(size=13, weight="bold"), text_color="gray")
