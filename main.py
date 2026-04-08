@@ -159,7 +159,7 @@ if __name__ == "__main__":
     title_label = ctk.CTkLabel(home_frame, text="nSEA", font=ctk.CTkFont(size=40, weight="bold"))
     title_label.pack(pady=(30, 5))
 
-    subtitle_label = ctk.CTkLabel(home_frame, text="Safe Exam Browser Config Key Generator", font=ctk.CTkFont(size=15, weight="bold"), text_color="#aaaaaa")
+    subtitle_label = ctk.CTkLabel(home_frame, text="ez exams now heheha", font=ctk.CTkFont(size=15, weight="bold"), text_color="#aaaaaa")
     subtitle_label.pack(pady=(0, 25))
 
     entry = ctk.CTkEntry(home_frame, width=400, height=50, placeholder_text="Paste Moodle exam URL here", corner_radius=10,
