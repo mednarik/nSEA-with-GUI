@@ -101,7 +101,7 @@ def seb_hash_from_config(filename: str) -> None:
     url = data["startURL"]
     config_key = make_http_header_hash(url, config_hash)
 
-    return f"X-SafeExamBrowser-ConfigKeyHash: {config_key}"
+    return f"X-SafeExamBrowser-ConfigKeyHash : {config_key}"
 
 
     # Handle script arguments.
