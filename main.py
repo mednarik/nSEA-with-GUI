@@ -3,7 +3,6 @@ from bs4 import BeautifulSoup
 from nsea import *
 import requests
 
-
 def get_session_cookie(username, password):
     session = requests.Session()
     headers = {"User-Agent": "Mozilla/5.0"}
@@ -20,7 +19,6 @@ def get_session_cookie(username, password):
     logintoken = logintoken_input.get("value", "")
     print(f"[DEBUG] Found logintoken: {logintoken}")
 
-    # POST always runs, not inside an if/else
     post_response = session.post(login_url, headers=headers, data={
         "username": username,
         "password": password,
@@ -29,7 +27,6 @@ def get_session_cookie(username, password):
     print(f"[DEBUG] POST status: {post_response.status_code}")
     print(f"[DEBUG] POST url: {post_response.url}")
     print(f"[DEBUG] Cookies: {session.cookies.get_dict()}")
-
     return session.cookies.get("MoodleSessionmdl4")
 
 def load_credentials(path="credentials.txt"):
@@ -40,7 +37,7 @@ def load_credentials(path="credentials.txt"):
         for line in file:
             line = line.strip()
             if not line or line.startswith("#"):
-                continue  # skip empty lines or comments
+                continue 
             if line.startswith("username"):
                 username = line.split("=", 1)[1].strip()
             elif line.startswith("password"):
@@ -48,7 +45,6 @@ def load_credentials(path="credentials.txt"):
 
                 if username is None or password is None:
                     raise ValueError("Credentials file is missing username or password")
-
         return username, password
 
 def get_download_page(cookie, url):
@@ -75,7 +71,6 @@ def download_file(cookie, url, save_path="config.seb"):
             f.write(chunk)
             print(f"Downloaded to {save_path}")
 
-
 def enter():
     url = entry.get()
     if not url:
@@ -96,14 +91,11 @@ def enter():
     output = seb_hash_from_config("config.seb")
     output_label.insert(0, output)
 
-
 if __name__ == "__main__":
 
-    # Create the main window
     root = tk.Tk()
     root.title("nSEA with GUI")
     root.minsize(400, 100)
-
 
     info_label = tk.Label(root, text="Paste URL")
     info_label.pack()
@@ -117,5 +109,4 @@ if __name__ == "__main__":
     output_label = tk.Entry(root, width=100)
     output_label.pack()
 
-    # Start the main event loop
     root.mainloop()
