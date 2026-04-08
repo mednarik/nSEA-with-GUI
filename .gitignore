@@ -2,3 +2,5 @@
 *.orig
 .*.swp
 config.seb
+credentials.txt
+__pycache__/
