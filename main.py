@@ -93,7 +93,7 @@ def enter():
         print("No matching link found")
         
     download_file(cookie, download_link)
-    output = seb_hash_from_config("config.seb")
+    output = seb_hash_from_config("config.seb").replace(":", " =")
     output_label.insert(0, output)
 
 
