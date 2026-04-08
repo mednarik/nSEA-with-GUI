@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 from nsea import *
 import requests
 
+cookie = None
+
 def get_session_cookie(username, password):
     session = requests.Session()
     headers = {"User-Agent": "Mozilla/5.0"}
@@ -13,20 +15,19 @@ def get_session_cookie(username, password):
 
     logintoken_input = soup.find("input", {"name": "logintoken"})
     if not logintoken_input:
-        print("[DEBUG] No logintoken found!")
         return None
 
     logintoken = logintoken_input.get("value", "")
-    print(f"[DEBUG] Found logintoken: {logintoken}")
 
     post_response = session.post(login_url, headers=headers, data={
         "username": username,
         "password": password,
         "logintoken": logintoken
     })
-    print(f"[DEBUG] POST status: {post_response.status_code}")
-    print(f"[DEBUG] POST url: {post_response.url}")
-    print(f"[DEBUG] Cookies: {session.cookies.get_dict()}")
+
+    if "login" in post_response.url:
+        return None
+
     return session.cookies.get("MoodleSessionmdl4")
 
 def load_credentials(path="credentials.txt"):
@@ -76,14 +77,6 @@ def enter():
     if not url:
         status_label.configure(text="Please enter a URL", text_color="red")
         return
-    status_label.configure(text="Logging in...", text_color="gray")
-    root.update()
-
-    credentials = load_credentials()
-    cookie = get_session_cookie(credentials[0], credentials[1])
-    if not cookie:
-        status_label.configure(text="Login failed — check credentials.txt", text_color="red")
-        return
 
     status_label.configure(text="Fetching download link...", text_color="gray")
     root.update()
@@ -106,6 +99,18 @@ def enter():
     output_label.configure(state="readonly")
     status_label.configure(text="Done!", text_color="green")
 
+def show_frame(frame):
+    frame.tkraise()
+
+def login():
+    global cookie
+    login_status.configure(text="Logging in...", text_color="gray")
+    root.update()
+    cookie = get_session_cookie(username_entry.get(), password_entry.get())
+    if not cookie:
+        login_status.configure(text="Login failed — check your credentials", text_color="red")
+        return
+    show_frame(home_frame)
 
 if __name__ == "__main__":
     ctk.set_appearance_mode("dark")
@@ -114,43 +119,67 @@ if __name__ == "__main__":
     root = ctk.CTk()
     root.title("nSEA")
     root.iconbitmap("icon.ico")
-    root.geometry("600x400")
+    root.geometry("600x420")
     root.minsize(600, 420)
     root.configure(fg_color="#111111")
 
-    # main container
-    home_frame = ctk.CTkFrame(root, corner_radius=15, fg_color="#1a1a1a")
-    home_frame.pack(padx=30, pady=30, fill="both", expand=True)
+    # --- login frame ---
+    login_frame = ctk.CTkFrame(root, corner_radius=15, fg_color="#1a1a1a")
+    login_frame.place(relwidth=1, relheight=1)
 
-    # title
+    login_title = ctk.CTkLabel(login_frame, text="nSEA", font=ctk.CTkFont(size=40, weight="bold"))
+    login_title.pack(pady=(40, 5))
+
+    login_subtitle = ctk.CTkLabel(login_frame, text="Login with your Moodle credentials", font=ctk.CTkFont(size=15, weight="bold"), text_color="#aaaaaa")
+    login_subtitle.pack(pady=(0, 25))
+
+    username_entry = ctk.CTkEntry(login_frame, width=400, height=50, placeholder_text="Username", corner_radius=10,
+                                  font=ctk.CTkFont(size=14, weight="bold"),
+                                  fg_color="#2a2a2a", border_width=2, text_color="white")
+    username_entry.pack(pady=(0, 15))
+
+    password_entry = ctk.CTkEntry(login_frame, width=400, height=50, placeholder_text="Password", corner_radius=10,
+                                  font=ctk.CTkFont(size=14, weight="bold"),
+                                  fg_color="#2a2a2a", border_width=2, text_color="white", show="*")
+    password_entry.pack(pady=(0, 15))
+
+    login_status = ctk.CTkLabel(login_frame, text="", font=ctk.CTkFont(size=13, weight="bold"), text_color="red")
+    login_status.pack(pady=(0, 10))
+
+
+    login_button = ctk.CTkButton(login_frame, text="Login", command=login, width=400, height=50, corner_radius=10,
+                                 font=ctk.CTkFont(size=16, weight="bold"))
+    login_button.pack()
+
+
+    # --- home frame ---
+    home_frame = ctk.CTkFrame(root, corner_radius=15, fg_color="#1a1a1a")
+    home_frame.place(relwidth=1, relheight=1)
+
     title_label = ctk.CTkLabel(home_frame, text="nSEA", font=ctk.CTkFont(size=40, weight="bold"))
     title_label.pack(pady=(30, 5))
 
     subtitle_label = ctk.CTkLabel(home_frame, text="Safe Exam Browser Config Key Generator", font=ctk.CTkFont(size=15, weight="bold"), text_color="#aaaaaa")
     subtitle_label.pack(pady=(0, 25))
 
-    # url input
     entry = ctk.CTkEntry(home_frame, width=400, height=50, placeholder_text="Paste Moodle exam URL here", corner_radius=10,
                          font=ctk.CTkFont(size=14, weight="bold"),
                          fg_color="#2a2a2a", border_width=2, text_color="white")
     entry.pack(pady=(0, 15))
 
-    # enter button
     button = ctk.CTkButton(home_frame, text="Generate Key", command=enter, width=400, height=50, corner_radius=10,
                            font=ctk.CTkFont(size=16, weight="bold"))
     button.pack(pady=(0, 15))
 
-    # output field
     output_label = ctk.CTkEntry(home_frame, width=400, height=50, corner_radius=10,
                                 placeholder_text="Output will appear here",
                                 font=ctk.CTkFont(size=14, weight="bold"),
-                                fg_color="#2a2a2a", border_width=2, 
+                                fg_color="#2a2a2a", border_width=2,
                                 text_color="white", state="readonly")
     output_label.pack(pady=(0, 10))
 
-    # status label
     status_label = ctk.CTkLabel(home_frame, text="", font=ctk.CTkFont(size=13, weight="bold"), text_color="gray")
     status_label.pack()
 
-
+    show_frame(login_frame)
     root.mainloop()
