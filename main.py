@@ -1,4 +1,4 @@
-import tkinter as tk
+import customtkinter as ctk
 from bs4 import BeautifulSoup
 from nsea import *
 import requests
@@ -74,39 +74,83 @@ def download_file(cookie, url, save_path="config.seb"):
 def enter():
     url = entry.get()
     if not url:
-        print("No URL entered")
+        status_label.configure(text="Please enter a URL", text_color="red")
         return
+    status_label.configure(text="Logging in...", text_color="gray")
+    root.update()
+
     credentials = load_credentials()
     cookie = get_session_cookie(credentials[0], credentials[1])
     if not cookie:
-        print("Login failed — check credentials")
+        status_label.configure(text="Login failed — check credentials.txt", text_color="red")
         return
-    download_link = "https://" + get_download_page(cookie, url)[7:]
-    if download_link:
-        print(f"download link: {download_link}")
-    else:
-        print("No matching link found")
-        
+
+    status_label.configure(text="Fetching download link...", text_color="gray")
+    root.update()
+
+    download_link = get_download_page(cookie, url)[7:]
+    if not download_link:
+        status_label.configure(text="No config file found", text_color="red")
+        return
+    download_link = "https://" + download_link
+
+    status_label.configure(text="Downloading config...", text_color="gray")
+    root.update()
+
     download_file(cookie, download_link)
     output = seb_hash_from_config("config.seb")
+
+    output_label.delete(0, "end")
+    output_label.configure(state="normal")
     output_label.insert(0, output)
+    output_label.configure(state="readonly")
+    status_label.configure(text="Done!", text_color="green")
+
 
 if __name__ == "__main__":
+    ctk.set_appearance_mode("dark")
+    ctk.set_default_color_theme("blue")
 
-    root = tk.Tk()
-    root.title("nSEA with GUI")
-    root.minsize(400, 100)
+    root = ctk.CTk()
+    root.title("nSEA")
+    root.iconbitmap("icon.ico")
+    root.geometry("600x400")
+    root.minsize(600, 420)
+    root.configure(fg_color="#111111")
 
-    info_label = tk.Label(root, text="Paste URL")
-    info_label.pack()
+    # main container
+    frame = ctk.CTkFrame(root, corner_radius=15, fg_color="#1a1a1a")
+    frame.pack(padx=30, pady=30, fill="both", expand=True)
 
-    entry = tk.Entry(root)
-    entry.pack()
-    
-    button = tk.Button(root, text="Enter", command=enter)
-    button.pack()
-    
-    output_label = tk.Entry(root, width=100)
-    output_label.pack()
+    # title
+    title_label = ctk.CTkLabel(frame, text="nSEA", font=ctk.CTkFont(size=40, weight="bold"))
+    title_label.pack(pady=(30, 5))
+
+    subtitle_label = ctk.CTkLabel(frame, text="Safe Exam Browser Config Key Generator", font=ctk.CTkFont(size=15, weight="bold"), text_color="#aaaaaa")
+    subtitle_label.pack(pady=(0, 25))
+
+    # url input
+    entry = ctk.CTkEntry(frame, width=400, height=50, placeholder_text="Paste Moodle exam URL here", corner_radius=10,
+                         font=ctk.CTkFont(size=14, weight="bold"),
+                         fg_color="#2a2a2a", border_width=2, text_color="white")
+    entry.pack(pady=(0, 15))
+
+    # enter button
+    button = ctk.CTkButton(frame, text="Generate Key", command=enter, width=400, height=50, corner_radius=10,
+                           font=ctk.CTkFont(size=16, weight="bold"))
+    button.pack(pady=(0, 15))
+
+    # output field
+    output_label = ctk.CTkEntry(frame, width=400, height=50, corner_radius=10,
+                                placeholder_text="Output will appear here",
+                                font=ctk.CTkFont(size=14, weight="bold"),
+                                fg_color="#2a2a2a", border_width=2, 
+                                text_color="white", state="readonly")
+    output_label.pack(pady=(0, 10))
+
+    # status label
+    status_label = ctk.CTkLabel(frame, text="", font=ctk.CTkFont(size=13, weight="bold"), text_color="gray")
+    status_label.pack()
+
 
     root.mainloop()
