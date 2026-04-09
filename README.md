@@ -32,8 +32,8 @@ password=yourpassword
    - Generate the config key hash
 5. Copy the output header and add it to your browser using an addon like [SimpleModifyHeaders](https://github.com/didierfred/SimpleModifyHeaders) for [Firefox](https://addons.mozilla.org/firefox/addon/simple-modify-header/) or [Chrome](https://chrome.google.com/webstore/detail/simple-modify-headers/gjgiipmpldkpbdfjkgofildhapegmmic)
 
-The output will look like:
-X-SafeExamBrowser-ConfigKeyHash: 6eb3652038ec372a2f2ec0c374e2cbf2c924e9b5d5aade177e7cef57f0598580
+The output will look like:  
+X-SafeExamBrowser-ConfigKeyHash : 6eb3652038ec372a2f2ec0c374e2cbf2c924e9b5d5aade177e7cef57f0598580
 
 ## Resources
 - [Original nSEA script](https://github.com/Chiogros/nSEA)
