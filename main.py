@@ -30,23 +30,6 @@ def get_session_cookie(username, password):
 
     return session.cookies.get("MoodleSessionmdl4")
 
-def load_credentials(path="credentials.txt"):
-    username = None
-    password = None
-
-    with open(path, "r", encoding="utf-8") as file:
-        for line in file:
-            line = line.strip()
-            if not line or line.startswith("#"):
-                continue 
-            if line.startswith("username"):
-                username = line.split("=", 1)[1].strip()
-            elif line.startswith("password"):
-                password = line.split("=", 1)[1].strip()
-
-                if username is None or password is None:
-                    raise ValueError("Credentials file is missing username or password")
-        return username, password
 
 def get_download_page(cookie, url):
     session = requests.Session()
