@@ -55,7 +55,7 @@ if __name__ == "__main__":
     root.minsize(600, 420)
     root.configure(fg_color="#111111")
 
-    # --- login frame ---
+#---login frame---
     login_frame = ctk.CTkFrame(root, corner_radius=15, fg_color="#1a1a1a")
     login_frame.place(relwidth=1, relheight=1)
 
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     login_button.pack()
 
 
-    # --- home frame ---
+#---home frame---
     home_frame = ctk.CTkFrame(root, corner_radius=15, fg_color="#1a1a1a")
     home_frame.place(relwidth=1, relheight=1)
 
