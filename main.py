@@ -1,59 +1,6 @@
 import customtkinter as ctk
-from bs4 import BeautifulSoup
 from nsea import *
-import requests
-
-cookie = None
-
-def get_session_cookie(username, password):
-    session = requests.Session()
-    headers = {"User-Agent": "Mozilla/5.0"}
-    login_url = "https://elearning.tgm.ac.at/login/index.php"
-
-    response = session.get(login_url, headers=headers)
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    logintoken_input = soup.find("input", {"name": "logintoken"})
-    if not logintoken_input:
-        return None
-
-    logintoken = logintoken_input.get("value", "")
-
-    post_response = session.post(login_url, headers=headers, data={
-        "username": username,
-        "password": password,
-        "logintoken": logintoken
-    })
-
-    if "login" in post_response.url:
-        return None
-
-    return session.cookies.get("MoodleSessionmdl4")
-
-
-def get_download_page(cookie, url):
-    session = requests.Session()
-    session.cookies.set("MoodleSessionmdl4", cookie)
-
-    response = session.get(url)
-    soup = BeautifulSoup(response.text, "html.parser")
-
-    links = soup.find_all("a", class_="btn btn-secondary")
-    for link in links:
-        href = link.get("href", "")
-        if "config.php" in href:
-            return href
-    return None
-
-def download_file(cookie, url, save_path="config.seb"):
-    session = requests.Session()
-    session.cookies.set("MoodleSessionmdl4", cookie)
-
-    response = session.get(url, stream=True)
-    with open(save_path, "wb") as f:
-        for chunk in response.iter_content(chunk_size=8192):
-            f.write(chunk)
-            print(f"Downloaded to {save_path}")
+from network import *
 
 def enter():
     url = entry.get()
@@ -85,8 +32,7 @@ def enter():
 def show_frame(frame):
     frame.tkraise()
 
-def login():
-    global cookie
+def login(cookie):
     login_status.configure(text="Logging in...", text_color="gray")
     root.update()
     cookie = get_session_cookie(username_entry.get(), password_entry.get())
@@ -96,6 +42,9 @@ def login():
     show_frame(home_frame)
 
 if __name__ == "__main__":
+    
+    cookie = None
+    
     ctk.set_appearance_mode("dark")
     ctk.set_default_color_theme("blue")
 
@@ -130,7 +79,7 @@ if __name__ == "__main__":
     login_status.pack(pady=(0, 10))
 
 
-    login_button = ctk.CTkButton(login_frame, text="Login", command=login, width=400, height=50, corner_radius=10,
+    login_button = ctk.CTkButton(login_frame, text="Login", command=lambda: login(cookie), width=400, height=50, corner_radius=10,
                                  font=ctk.CTkFont(size=16, weight="bold"))
     login_button.pack()
 
@@ -166,4 +115,5 @@ if __name__ == "__main__":
     status_label.pack()
 
     show_frame(login_frame)
+    
     root.mainloop()
